@@ -21,60 +21,17 @@ import { JSONSchema } from '../types';
 import { identifier, propertySignature } from '../utils/babel';
 
 export const CONSTANT_EXEC_PARAMS = [
-  t.assignmentPattern(
-    identifier(
-      'fee',
-      t.tsTypeAnnotation(
-        t.tsUnionType(
-          [
-            t.tSNumberKeyword(),
-            t.tsTypeReference(
-              t.identifier('StdFee')
-            ),
-            t.tsLiteralType(
-              t.stringLiteral('auto')
-            )
-          ]
-        )
-      ),
-      false
-    ),
-    t.stringLiteral('auto')
-  ),
-  identifier('memo', t.tsTypeAnnotation(
-    t.tsStringKeyword()
-  ), true),
-  identifier('funds', t.tsTypeAnnotation(
-    t.tsArrayType(
-      t.tsTypeReference(
-        t.identifier('Coin')
-      )
+  identifier('coins', t.tsTypeAnnotation(
+    t.tsTypeReference(
+      t.identifier('Coins'),
     )
   ), true)
 ];
 
 export const FIXED_EXECUTE_PARAMS = [
-  identifier('fee', t.tsTypeAnnotation(
-    t.tsUnionType(
-      [
-        t.tsNumberKeyword(),
-        t.tsTypeReference(
-          t.identifier('StdFee')
-        ),
-        t.tsLiteralType(
-          t.stringLiteral('auto')
-        )
-      ]
-    )
-  ), true),
-  identifier('memo', t.tsTypeAnnotation(
-    t.tsStringKeyword()
-  ), true),
-  identifier('funds', t.tsTypeAnnotation(
-    t.tsArrayType(
-      t.tsTypeReference(
-        t.identifier('Coin')
-      )
+  identifier('coins', t.tsTypeAnnotation(
+    t.tsTypeReference(
+      t.identifier('Coins')
     )
   ), true)
 ];
@@ -111,11 +68,14 @@ export const createWasmQueryMethod = (
           t.returnStatement(
             t.callExpression(
               t.memberExpression(
-                t.memberExpression(
-                  t.thisExpression(),
-                  t.identifier('client')
-                ),
-                t.identifier('queryContractSmart')
+               t.memberExpression(
+                 t.memberExpression(
+                   t.thisExpression(),
+                   t.identifier('client')
+                 ),
+                 t.identifier('wasm')
+               ),
+               t.identifier('contractQuery')
               ),
               [
                 t.memberExpression(t.thisExpression(), t.identifier('contractAddress')),
@@ -151,7 +111,7 @@ export const createQueryClass = (
   queryMsg: QueryMsg
 ) => {
 
-  context.addUtil('CosmWasmClient');
+  context.addUtil('LCDClient');
 
   const propertyNames = getMessageProperties(queryMsg)
     .map(method => Object.keys(method.properties)?.[0])
@@ -171,7 +131,7 @@ export const createQueryClass = (
       [
         // client
         classProperty('client', t.tsTypeAnnotation(
-          t.tsTypeReference(t.identifier('CosmWasmClient'))
+          t.tsTypeReference(t.identifier('LCDClient'))
         )),
 
         // contractAddress
@@ -183,7 +143,7 @@ export const createQueryClass = (
         t.classMethod('constructor',
           t.identifier('constructor'),
           [
-            typedIdentifier('client', t.tsTypeAnnotation(t.tsTypeReference(t.identifier('CosmWasmClient')))),
+            typedIdentifier('client', t.tsTypeAnnotation(t.tsTypeReference(t.identifier('LCDClient')))),
             typedIdentifier('contractAddress', t.tsTypeAnnotation(t.tsStringKeyword()))
 
           ],
@@ -259,9 +219,12 @@ export const createWasmExecMethod = (
   jsonschema: JSONSchema
 ) => {
 
+  context.addUtil('MnemonicKey');
+  context.addUtil('MsgExecuteContract');
+  context.addUtil('WaitTxBroadcastResult');
   context.addUtil('ExecuteResult');
   context.addUtil('StdFee');
-  context.addUtil('Coin');
+  context.addUtil('Coins');
 
   const underscoreName = Object.keys(jsonschema.properties)[0];
   const methodName = camel(underscoreName);
@@ -284,40 +247,127 @@ export const createWasmExecMethod = (
       ] : CONSTANT_EXEC_PARAMS,
       t.blockStatement(
         [
-          t.returnStatement(
+        // Create a key from menemonic
+        //  const key = new MnemonicKey(mnemonicKeyOptions)      
+        t.variableDeclaration(
+          'const',
+          [t.variableDeclarator(
+            t.identifier('key'), 
+            t.newExpression(
+               t.identifier('MnemonicKey'),
+               [
+                t.memberExpression(
+                  t.thisExpression(),
+                  t.identifier('mnemonicKeyOptions')
+                ),
+               ]
+            )
+          )]
+        ),
+
+        // Create a wallet from key
+        //  const wallet = client.wallet(key)    
+        t.variableDeclaration(
+          'const',
+          [t.variableDeclarator(
+            t.identifier('wallet'), 
+            t.callExpression(
+              t.memberExpression(
+                t.memberExpression(
+                  t.thisExpression(),
+                  t.identifier('client')
+                ),
+                t.identifier('wallet')
+              ),
+              [
+                t.identifier('key')
+              ]
+            )
+          )]
+        ),
+
+        // Create contract execute message
+        //  const msg = new MsgExecuteContract(sender, contractAddress, executeMsg)      
+        t.variableDeclaration(
+          'const',
+          [t.variableDeclarator(
+            t.identifier('msg'), 
+            t.newExpression(
+               t.identifier('MsgExecuteContract'),
+               [
+                t.memberExpression(
+                  t.thisExpression(),
+                  t.identifier('sender')
+                ),
+                t.memberExpression(
+                  t.thisExpression(),
+                  t.identifier('contractAddress')
+                ),
+                t.objectExpression(
+                  [
+                    t.objectProperty(
+                      t.identifier(underscoreName),
+                      t.objectExpression([
+                        ...args
+                      ])
+                    )
+
+                  ]
+                ),
+                t.identifier('coins'),
+               ]
+            )
+          )]
+        ),
+
+        // Create tx options data
+        //  const txOptions = {msgs: [msg]}
+        t.variableDeclaration(
+          'const',
+          [t.variableDeclarator(
+            t.identifier('txOptions'), 
+            t.identifier("{ msgs: [msg] }"),
+          )]
+        ),
+
+        // Create and sign transaction
+        //  const tx = await wallet.createAndSignTx(txOptions);
+        t.variableDeclaration(
+          'const',
+          [t.variableDeclarator(
+            t.identifier('tx'), 
+            t.awaitExpression(
+             t.callExpression(
+                t.memberExpression(
+                 t.identifier('wallet'),
+                  t.identifier('createAndSignTx')
+               ),
+               [
+                  t.identifier('txOptions')
+               ]
+              ),
+            )
+          )]
+        ),
+
+        // Broadcast transaction
+        //  return await client.tx.broadcast(tx);
+        t.returnStatement(
             t.awaitExpression(
               t.callExpression(
                 t.memberExpression(
-                  t.memberExpression(
-                    t.thisExpression(),
-                    t.identifier('client')
-                  ),
-                  t.identifier('execute')
-                ),
-                [
-                  t.memberExpression(
-                    t.thisExpression(),
-                    t.identifier('sender')
-                  ),
-                  t.memberExpression(
-                    t.thisExpression(),
-                    t.identifier('contractAddress')
-                  ),
-                  t.objectExpression(
-                    [
-                      t.objectProperty(
-                        t.identifier(underscoreName),
-                        t.objectExpression([
-                          ...args
-                        ])
-                      )
-
-                    ]
-                  ),
-                  t.identifier('fee'),
-                  t.identifier('memo'),
-                  t.identifier('funds')
-                ]
+                 t.memberExpression(
+                   t.memberExpression(
+                      t.thisExpression(),
+                      t.identifier('client')
+                   ),
+                    t.identifier('tx'),
+                   ),
+                   t.identifier('broadcast'),
+                 ),
+              [
+                t.identifier('tx')
+              ]
               )
             )
           )
@@ -330,7 +380,7 @@ export const createWasmExecMethod = (
           t.tsTypeParameterInstantiation(
             [
               t.tSTypeReference(
-                t.identifier('ExecuteResult')
+                t.identifier('WaitTxBroadcastResult')
               )
             ]
           )
@@ -350,7 +400,7 @@ export const createExecuteClass = (
   execMsg: ExecuteMsg
 ) => {
 
-  context.addUtil('SigningCosmWasmClient');
+  context.addUtil('LCDClient');
 
   const propertyNames = getMessageProperties(execMsg)
     .map(method => Object.keys(method.properties)?.[0])
@@ -406,6 +456,16 @@ export const createExecuteClass = (
         '=',
         t.memberExpression(
           t.thisExpression(),
+          t.identifier('mnemonicKeyOptions')
+        ),
+        t.identifier('mnemonicKeyOptions')
+      )
+    ),
+    t.expressionStatement(
+      t.assignmentExpression(
+        '=',
+        t.memberExpression(
+          t.thisExpression(),
           t.identifier('contractAddress')
         ),
         t.identifier('contractAddress')
@@ -419,12 +479,17 @@ export const createExecuteClass = (
       [
         // client
         classProperty('client', t.tsTypeAnnotation(
-          t.tsTypeReference(t.identifier('SigningCosmWasmClient'))
+          t.tsTypeReference(t.identifier('LCDClient'))
         )),
 
         // sender
         classProperty('sender', t.tsTypeAnnotation(
           t.tsStringKeyword()
+        )),
+
+        // mnemonicKeyOptions
+        classProperty('mnemonicKeyOptions', t.tsTypeAnnotation(
+          t.tsAnyKeyword()
         )),
 
         // contractAddress
@@ -436,9 +501,10 @@ export const createExecuteClass = (
         t.classMethod('constructor',
           t.identifier('constructor'),
           [
-            typedIdentifier('client', t.tsTypeAnnotation(t.tsTypeReference(t.identifier('SigningCosmWasmClient')))),
+            typedIdentifier('client', t.tsTypeAnnotation(t.tsTypeReference(t.identifier('LCDClient')))),
             typedIdentifier('sender', t.tsTypeAnnotation(t.tsStringKeyword())),
-            typedIdentifier('contractAddress', t.tsTypeAnnotation(t.tsStringKeyword()))
+            typedIdentifier('mnemonicKeyOptions', t.tsTypeAnnotation(t.tsStringKeyword())),
+            typedIdentifier('contractAddress', t.tsTypeAnnotation(t.tsStringKeyword())),
           ],
           t.blockStatement(
             blockStmt
@@ -469,7 +535,7 @@ export const createExecuteInterface = (
       return createPropertyFunctionWithObjectParamsForExec(
         context,
         methodName,
-        'ExecuteResult',
+        'WaitTxBroadcastResult',
         jsonschema.properties[underscoreName]
       );
     });
@@ -541,7 +607,7 @@ export const createPropertyFunctionWithObjectParamsForExec = (
   jsonschema: JSONSchema
 ) => {
 
-  context.addUtil('Coin');
+  context.addUtil('Coins');
 
   const obj = createTypedObjectParams(context, jsonschema);
 

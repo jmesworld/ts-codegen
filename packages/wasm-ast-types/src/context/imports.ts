@@ -30,15 +30,17 @@ const makeReactQuerySwitch = (varName) => {
 }
 
 export const UTILS = {
-  MsgExecuteContract: 'cosmjs-types/cosmwasm/wasm/v1/tx',
+  MsgExecuteContract: '@terra-money/terra.js',
   MsgExecuteContractEncodeObject: 'cosmwasm',
-  Coin: '@cosmjs/amino',
+  Coin: '@terra-money/terra.js',
+  Coins: '@terra-money/terra.js',
   toUtf8: '@cosmjs/encoding',
   selectorFamily: 'recoil',
   StdFee: '@cosmjs/amino',
-  CosmWasmClient: '@cosmjs/cosmwasm-stargate',
+  LCDClient: '@terra-money/terra.js',
+  MnemonicKey: '@terra-money/terra.js',
   ExecuteResult: '@cosmjs/cosmwasm-stargate',
-  SigningCosmWasmClient: '@cosmjs/cosmwasm-stargate',
+  WaitTxBroadcastResult: '@terra-money/terra.js',
 
   // react-query
   useQuery: makeReactQuerySwitch('useQuery'),

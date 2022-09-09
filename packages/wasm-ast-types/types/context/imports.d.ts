@@ -9,12 +9,15 @@ export declare const UTILS: {
     MsgExecuteContract: string;
     MsgExecuteContractEncodeObject: string;
     Coin: string;
+    Coins: string;
     toUtf8: string;
     selectorFamily: string;
     StdFee: string;
-    CosmWasmClient: string;
+    LCDClient: string;
+    MnemonicKey: string;
     ExecuteResult: string;
-    SigningCosmWasmClient: string;
+    WaitTxBroadcastResult: string;
+
     useQuery: (context: RenderContext) => {
         type: string;
         path: string;

@@ -248,7 +248,7 @@ export const createWasmExecMethod = (
       t.blockStatement(
         [
         // Create a key from menemonic
-        //  const key = new MnemonicKey(mnemonicKeyOptions)      
+        //  const key = new MnemonicKey(user.mnemonicKeyOptions)      
         t.variableDeclaration(
           'const',
           [t.variableDeclarator(
@@ -257,8 +257,11 @@ export const createWasmExecMethod = (
                t.identifier('MnemonicKey'),
                [
                 t.memberExpression(
-                  t.thisExpression(),
-                  t.identifier('mnemonicKeyOptions')
+                  t.memberExpression(
+                    t.thisExpression(),
+                    t.identifier('user'),
+                 ),
+                  t.identifier('mnemonicKeyOptions'),
                 ),
                ]
             )
@@ -287,7 +290,7 @@ export const createWasmExecMethod = (
         ),
 
         // Create contract execute message
-        //  const msg = new MsgExecuteContract(sender, contractAddress, executeMsg)      
+        //  const msg = new MsgExecuteContract(user.address, contractAddress, executeMsg)      
         t.variableDeclaration(
           'const',
           [t.variableDeclarator(
@@ -296,8 +299,11 @@ export const createWasmExecMethod = (
                t.identifier('MsgExecuteContract'),
                [
                 t.memberExpression(
-                  t.thisExpression(),
-                  t.identifier('sender')
+                  t.memberExpression(
+                    t.thisExpression(),
+                    t.identifier('user'),
+                  ),
+                  t.identifier('address')
                 ),
                 t.memberExpression(
                   t.thisExpression(),
@@ -446,19 +452,9 @@ export const createExecuteClass = (
         '=',
         t.memberExpression(
           t.thisExpression(),
-          t.identifier('sender')
+          t.identifier('user')
         ),
-        t.identifier('sender')
-      )
-    ),
-    t.expressionStatement(
-      t.assignmentExpression(
-        '=',
-        t.memberExpression(
-          t.thisExpression(),
-          t.identifier('mnemonicKeyOptions')
-        ),
-        t.identifier('mnemonicKeyOptions')
+        t.identifier('user')
       )
     ),
     t.expressionStatement(
@@ -482,13 +478,8 @@ export const createExecuteClass = (
           t.tsTypeReference(t.identifier('LCDClient'))
         )),
 
-        // sender
-        classProperty('sender', t.tsTypeAnnotation(
-          t.tsStringKeyword()
-        )),
-
-        // mnemonicKeyOptions
-        classProperty('mnemonicKeyOptions', t.tsTypeAnnotation(
+        // user
+        classProperty('user', t.tsTypeAnnotation(
           t.tsAnyKeyword()
         )),
 
@@ -502,8 +493,7 @@ export const createExecuteClass = (
           t.identifier('constructor'),
           [
             typedIdentifier('client', t.tsTypeAnnotation(t.tsTypeReference(t.identifier('LCDClient')))),
-            typedIdentifier('sender', t.tsTypeAnnotation(t.tsStringKeyword())),
-            typedIdentifier('mnemonicKeyOptions', t.tsTypeAnnotation(t.tsStringKeyword())),
+            typedIdentifier('user', t.tsTypeAnnotation(t.tsAnyKeyword())),
             typedIdentifier('contractAddress', t.tsTypeAnnotation(t.tsStringKeyword())),
           ],
           t.blockStatement(
@@ -555,14 +545,6 @@ export const createExecuteInterface = (
           // contract address
           t.tSPropertySignature(
             t.identifier('contractAddress'),
-            t.tsTypeAnnotation(
-              t.tsStringKeyword()
-            )
-          ),
-
-          // contract address
-          t.tSPropertySignature(
-            t.identifier('sender'),
             t.tsTypeAnnotation(
               t.tsStringKeyword()
             )

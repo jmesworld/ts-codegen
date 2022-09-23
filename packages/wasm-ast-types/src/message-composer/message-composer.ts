@@ -20,7 +20,7 @@ const createWasmExecMethodMessageComposer = (
     jsonschema: any
 ) => {
 
-    context.addUtil('Coin');
+    context.addUtil('Coins');
     context.addUtil('MsgExecuteContractEncodeObject');
     context.addUtil('MsgExecuteContract');
     context.addUtil('toUtf8');
@@ -37,7 +37,7 @@ const createWasmExecMethodMessageComposer = (
         identifier('funds', t.tsTypeAnnotation(
             t.tsArrayType(
                 t.tsTypeReference(
-                    t.identifier('Coin')
+                    t.identifier('Coins')
                 )
             )
         ), true)
@@ -277,7 +277,7 @@ const createPropertyFunctionWithObjectParamsForMessageComposer = (
         identifier('funds', t.tsTypeAnnotation(
             t.tsArrayType(
                 t.tsTypeReference(
-                    t.identifier('Coin')
+                    t.identifier('Coins')
                 )
             )
         ), true)

@@ -8,14 +8,11 @@ export interface ImportObj {
 export declare const UTILS: {
     MsgExecuteContract: string;
     MsgExecuteContractEncodeObject: string;
-    Coin: string;
     Coins: string;
     toUtf8: string;
     selectorFamily: string;
-    StdFee: string;
     LCDClient: string;
     MnemonicKey: string;
-    ExecuteResult: string;
     WaitTxBroadcastResult: string;
 
     useQuery: (context: RenderContext) => {

@@ -222,8 +222,6 @@ export const createWasmExecMethod = (
   context.addUtil('MnemonicKey');
   context.addUtil('MsgExecuteContract');
   context.addUtil('WaitTxBroadcastResult');
-  context.addUtil('ExecuteResult');
-  context.addUtil('StdFee');
   context.addUtil('Coins');
 
   const underscoreName = Object.keys(jsonschema.properties)[0];

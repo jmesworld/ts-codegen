@@ -3,7 +3,7 @@
 Generate TypeScript SDKs for your CosmWasm smart contracts
 
 <p align="center">
-  <img width="120" src="https://user-images.githubusercontent.com/545047/163705368-bc899f6d-a2de-43ee-889b-dbf44e17f288.png">
+  <img width="120" src="https://user-images.githubusercontent.com/545047/191621556-6f1baa40-15ff-4465-8d80-63b3ff9bc23a.svg">
 </p>
 
 <p align="center" width="100%">
@@ -21,6 +21,7 @@ npm install -g @cosmwasm/ts-codegen
 
 The quickest and easiest way to interact with CosmWasm Contracts. `@cosmwasm/ts-codegen` converts your CosmWasm smart contracts into dev-friendly TypeScript classes so you can focus on shipping code.
 
+🎥 [Checkout our video playlist](https://www.youtube.com/watch?v=D_A5V2PfNLA&list=PL-lMkVv7GZwz1KO3jANwr5W4MoziruXwK) to learn how to use `ts-codegen`!
 ## Table of contents
 
 - [@cosmwasm/ts-codegen](#cosmwasmts-codegen)
@@ -47,8 +48,8 @@ The quickest and easiest way to interact with CosmWasm Contracts. `@cosmwasm/ts-
 Clone your project and `cd` into your contracts folder
 
 ```sh
-git clone git@github.com:public-awesome/stargaze-contracts.git
-cd stargaze-contracts/contracts/sg721/
+git clone https://github.com/public-awesome/launchpad.git
+cd launchpad/contracts/sg721-base/
 ```
 
 Run `cosmwasm-ts-codegen` to generate your code.
@@ -58,7 +59,8 @@ cosmwasm-ts-codegen generate \
           --plugin client \
           --schema ./schema \
           --out ./ts \
-          --name SG721
+          --name SG721 \
+          --no-bundle
 ```
 
 The output will be in the folder specified by `--out`, enjoy!
@@ -144,6 +146,7 @@ The `client` plugin will generate TS client classes for your contracts. This opt
   | option                        | description                                          |
   | ----------------------------- | ---------------------------------------------------  |
   | `client.enabled`              | generate TS client classes for your contracts        |
+  | `client.execExtendsQuery`     | execute should extend query message clients          |
 
 #### Client via CLI
 
@@ -424,9 +427,9 @@ cargo schema
  }
  ```
 
- #### `cosmwasm_std` Example
+#### `cosmwasm_std` Example
 
- Here is a legacy example:
+Here is a legacy example:
 
 ```rs
 use cosmwasm_std::{Addr, CosmosMsg, Empty};
@@ -477,5 +480,5 @@ Checkout these related projects:
 
 ## Credits
 
-Built by Cosmology — if you like our tools, please consider delegating to [our validator](https://www.mintscan.io/juno/validators/junovaloper1pr5qgj4jg47lvsnejtfvk78090shvuctgdwdm5)
+🛠 Built by Cosmology — if you like our tools, please consider delegating to [our validator ⚛️](https://cosmology.tech/validator)
 

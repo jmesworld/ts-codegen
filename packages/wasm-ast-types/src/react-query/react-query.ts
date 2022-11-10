@@ -291,7 +291,7 @@ export interface Cw4UpdateMembersMutation {
     remove: string[]
   }
   options?: Omit<
-    UseMutationOptions<ExecuteResult, Error, Pick<Cw4UpdateMembersMutation, 'args'>>,
+    UseMutationOptions<WaitTxBroadcastResult, Error, Pick<Cw4UpdateMembersMutation, 'args'>>,
     'mutationFn'
   >
 }
@@ -332,8 +332,8 @@ export const createReactQueryMutationArgsInterface = ({
             ))
     }
 
-    context.addUtil('StdFee')
-    context.addUtil('Coin');
+    // context.addUtil('StdFee')
+    context.addUtil('Coins');
     //  fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]
 
     const optionalArgs = t.tsPropertySignature(
@@ -397,7 +397,7 @@ export const createReactQueryMutationHooks = ({
             // TODO: there should be a better way to do this
             const hasMsg = !!(Object.keys(properties)?.length || jsonschema?.$ref)
 
-            // <ExecuteResult, Error, Cw4UpdateMembersMutation>
+            // <WaitTxBroadcastResult, Error, Cw4UpdateMembersMutation>
             const useMutationTypeParameter = generateMutationTypeParameter(
                 context,
                 mutationHookParamsTypeName
@@ -433,12 +433,12 @@ const generateMutationTypeParameter = (
     mutationHookParamsTypeName: string
 ) => {
 
-    context.addUtil('ExecuteResult');
+    context.addUtil('WaitTxBroadcastResult');
 
     return t.tsTypeParameterInstantiation([
         // Data
         t.tSTypeReference(
-            t.identifier('ExecuteResult')
+            t.identifier('WaitTxBroadcastResult')
         ),
         // Error
         t.tsTypeReference(
@@ -466,7 +466,7 @@ interface ReactQueryMutationHook {
  * Example:
 ```
 export const useCw4UpdateMembersMutation = ({ client, options }: Omit<Cw4UpdateMembersMutation, 'args'>) =>
-  useMutation<ExecuteResult, Error, Pick<Cw4UpdateMembersMutation, 'args'>>(
+  useMutation<WaitTxBroadcastResult, Error, Pick<Cw4UpdateMembersMutation, 'args'>>(
     ({ args }) => client.updateMembers(args),
     options
   )

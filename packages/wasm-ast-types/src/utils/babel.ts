@@ -179,8 +179,8 @@ export const FieldTypeAsts = {
     Height: () => {
         return t.tsTypeReference(t.identifier('Height'))
     },
-    Coin: () => {
-        return t.tsTypeReference(t.identifier('Coin'))
+    Coins: () => {
+        return t.tsTypeReference(t.identifier('Coins'))
     },
     Long: () => {
         return t.tsTypeReference(t.identifier('Long'))

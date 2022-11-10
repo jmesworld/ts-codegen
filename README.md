@@ -407,23 +407,25 @@ cd contracts/sg721/
 cargo schema
 ```
 ### Exporting Schemas
+
 #### `cosmwasm v1.1` Example
 
-Using the new `write_api` method, you can export schemas:
+ Using the new `write_api` method, you can export schemas:
 
-```rs
-use cosmwasm_schema::write_api;
+ ```rs
+ use cosmwasm_schema::write_api;
 
-use cw4_group::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+ pub use cw4::{AdminResponse, MemberListResponse, MemberResponse, TotalWeightResponse};
+ pub use cw4_group::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
-fn main() {
-    write_api! {
-        instantiate: InstantiateMsg,
-        execute: ExecuteMsg,
-        query: QueryMsg,
-    }
-}
-```
+ fn main() {
+     write_api! {
+         instantiate: InstantiateMsg,
+         execute: ExecuteMsg,
+         query: QueryMsg,
+     }
+ }
+ ```
 
 #### `cosmwasm_std` Example
 

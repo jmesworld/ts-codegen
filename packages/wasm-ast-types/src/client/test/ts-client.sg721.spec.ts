@@ -5,7 +5,7 @@ import {
     createExecuteInterface,
     createTypeInterface
 } from '../client'
-import { expectCode, makeContext } from '../../../test-utils';
+import { expectCode } from '../../../test-utils';
 
 const ctx = makeContext(execute_msg_for__empty);
 

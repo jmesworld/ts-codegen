@@ -6,9 +6,12 @@ export interface ReactQueryOptions {
     mutations?: boolean;
     camelize?: boolean;
     queryKeys?: boolean;
+    queryFactory?: boolean;
 }
 export interface TSClientOptions {
     enabled?: boolean;
+    execExtendsQuery?: boolean;
+    noImplicitOverride?: boolean;
 }
 export interface MessageComposerOptions {
     enabled?: boolean;

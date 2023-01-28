@@ -468,13 +468,15 @@ export const createExecuteClass = (
     ...bindings
   ]);
 
+  const noImplicitOverride = context.options.client.noImplicitOverride && extendsClassName && context.options.client.execExtendsQuery;
+
   return t.exportNamedDeclaration(
     classDeclaration(className,
       [
         // client
         classProperty('client', t.tsTypeAnnotation(
-          t.tsTypeReference(t.identifier('LCDClient'))
-        )),
+          t.tsTypeReference(t.identifier('SigningCosmWasmClient'))
+        ), false, false, noImplicitOverride),
 
         // user
         classProperty('user', t.tsTypeAnnotation(
@@ -484,7 +486,7 @@ export const createExecuteClass = (
         // contractAddress
         classProperty('contractAddress', t.tsTypeAnnotation(
           t.tsStringKeyword()
-        )),
+        ), false, false, noImplicitOverride),
 
         // constructor
         t.classMethod('constructor',

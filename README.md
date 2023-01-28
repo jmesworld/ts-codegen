@@ -10,10 +10,12 @@ Generate TypeScript SDKs for your CosmWasm smart contracts
   <a href="https://github.com/CosmWasm/ts-codegen/actions/workflows/run-tests.yaml">
     <img height="20" src="https://github.com/CosmWasm/ts-codegen/actions/workflows/run-tests.yaml/badge.svg" />
   </a>
+   <a href="https://www.npmjs.com/package/@cosmwasm/ts-codegen"><img height="20" src="https://img.shields.io/npm/dt/@cosmwasm/ts-codegen"></a>
    <a href="https://github.com/CosmWasm/ts-codegen/blob/main/LICENSE-MIT"><img height="20" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
    <a href="https://github.com/CosmWasm/ts-codegen/blob/main/LICENSE-Apache"><img height="20" src="https://img.shields.io/badge/license-Apache-blue.svg"></a>
    <a href="https://www.npmjs.com/package/@cosmwasm/ts-codegen"><img height="20" src="https://img.shields.io/github/package-json/v/CosmWasm/ts-codegen?filename=packages%2Fts-codegen%2Fpackage.json"></a>
 </p>
+
 
 ```
 npm install -g @cosmwasm/ts-codegen
@@ -110,6 +112,7 @@ codegen({
       version: 'v4',
       mutations: true,
       queryKeys: true,
+      queryFactory: true,
     },
     recoil: {
       enabled: false
@@ -143,10 +146,11 @@ The `client` plugin will generate TS client classes for your contracts. This opt
 
 #### Client Options
 
-  | option                        | description                                          |
-  | ----------------------------- | ---------------------------------------------------  |
-  | `client.enabled`              | generate TS client classes for your contracts        |
-  | `client.execExtendsQuery`     | execute should extend query message clients          |
+  | option                                  | description                                          |
+  | --------------------------------------- | ---------------------------------------------------  |
+  | `client.enabled`                        | generate TS client classes for your contracts        |
+  | `client.execExtendsQuery`               | execute should extend query message clients          |
+  | `client.noImplicitOverride`             | should match your tsconfig noImplicitOverride option |
 
 #### Client via CLI
 
@@ -166,10 +170,11 @@ Generate [react-query v3](https://react-query-v3.tanstack.com/) or [react-query 
 #### React Query Options
 
   | option                      | description                                                                  |
-  | ----------------------------| ---------------------------------------------------------------------------- |
+  | ---------------------------- | ---------------------------------------------------------------------------- |
   | `reactQuery.enabled`        | enable the react-query plugin                                                |
   | `reactQuery.optionalClient` | allows contract client to be undefined as the component renders              |
   | `reactQuery.queryKeys`      | generates a const queryKeys object for use with invalidations and set values |
+  | `reactQuery.queryFactory`   | generates a const queryFactory object for useQueries and prefetchQueries use |
   | `reactQuery.version`        | `v4` uses `@tanstack/react-query` and `v3` uses `react-query`                |
   | `reactQuery.mutations`      | also generate mutations                                                      |
   | `reactQuery.camelize`       | use camelCase style for property names                                       |
@@ -477,7 +482,8 @@ See the [docs](https://github.com/CosmWasm/ts-codegen/blob/main/packages/wasm-as
 Checkout these related projects:
 
 * [@osmonauts/telescope](https://github.com/osmosis-labs/telescope) a "babel for the Cosmos", Telescope is a TypeScript Transpiler for Cosmos Protobufs.
-
+* [chain-registry](https://github.com/cosmology-tech/chain-registry) Cosmos chain registry and chain info.
+* [cosmos-kit](https://github.com/cosmology-tech/cosmos-kit) A wallet connector for the Cosmos.
 ## Credits
 
 🛠 Built by Cosmology — if you like our tools, please consider delegating to [our validator ⚛️](https://cosmology.tech/validator)

@@ -31,4 +31,3 @@ it('daodao/cw-code-id-registry', async () => {
     writeFileSync(out + '/clean.json', JSON.stringify(clean, null, 2));
 
 })
-

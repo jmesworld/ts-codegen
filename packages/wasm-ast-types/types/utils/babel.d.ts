@@ -26,7 +26,7 @@ export declare const FieldTypeAsts: {
     array: (type: any) => t.TSArrayType;
     Duration: () => t.TSTypeReference;
     Height: () => t.TSTypeReference;
-    Coin: () => t.TSTypeReference;
+    Coins: () => t.TSTypeReference;
     Long: () => t.TSTypeReference;
 };
 export declare const shorthandProperty: (prop: string) => t.ObjectProperty;

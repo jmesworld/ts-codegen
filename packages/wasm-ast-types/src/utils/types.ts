@@ -46,16 +46,6 @@ const getTypeOrRef = (obj) => {
 }
 
 const getArrayTypeFromItems = (items) => {
-  // passing in [{"type":"string"}]
-  if (Array.isArray(items)) {
-    return t.tsArrayType(
-      t.tsArrayType(
-        getTypeOrRef(items[0])
-      )
-    );
-  }
-
-  // passing in {"items": [{"type":"string"}]}
   const detect = detectType(items.type);
 
   if (detect.type === 'array') {
@@ -167,45 +157,21 @@ export const getTypeInfo = (info: JSONSchema) => {
     }
 
     if (nullableType === 'array' && typeof info.items === 'object' && !Array.isArray(info.items)) {
-
-      if (info.items.type) {
-        const detect = detectType(info.items.type);
-        if (detect.type === 'array') {
-          // wen recursion?
-          type = t.tsArrayType(
-            getArrayTypeFromItems(info.items)
-          );
-        } else {
-          type = t.tsArrayType(
-            getType(detect.type)
-          );
-        }
-        optional = detect.optional;
-      } else if (info.items.$ref) {
-        type = getArrayTypeFromRef(info.items.$ref);
-        // } else if (info.items.title) {
-        //   type = t.tsArrayType(
-        //     t.tsTypeReference(
-        //       t.identifier(info.items.title)
-        //     )
-        //   );
-      } else if (info.items.type) {
-        type = getArrayTypeFromItems(info.items);
-      } else {
-        throw new Error('[info.items] case not handled by transpiler. contact maintainers.')
-      }
-
-    } else {
-      const detect = detectType(nullableType);
-      optional = detect.optional;
+      const detect = detectType(info.items.type);
       if (detect.type === 'array') {
-        type = getArrayTypeFromItems(
-          info.items
+        // wen recursion?
+        type = t.tsArrayType(
+          getArrayTypeFromItems(info.items)
         );
       } else {
-        type = getType(detect.type);
+        type = t.tsArrayType(
+          getType(detect.type)
+        );
       }
+      optional = detect.optional;
 
+    } else {
+      type = getType(nullableType);
     }
 
     optional = true;
@@ -366,7 +332,7 @@ export function getPropertySignatureFromProp(
     getPropertyType(context, jsonschema, prop);
   } catch (e) {
     console.log(e);
-    console.log(JSON.stringify(jsonschema, null, 2), prop);
+    console.log(jsonschema, prop);
   }
 
   const { type, optional } = getPropertyType(context, jsonschema, prop);

@@ -3,7 +3,7 @@
 Generate TypeScript SDKs for your CosmWasm smart contracts
 
 <p align="center">
-  <img width="120" src="https://user-images.githubusercontent.com/545047/191621556-6f1baa40-15ff-4465-8d80-63b3ff9bc23a.svg">
+  <img width="120" src="https://user-images.githubusercontent.com/545047/163705368-bc899f6d-a2de-43ee-889b-dbf44e17f288.png">
 </p>
 
 <p align="center" width="100%">
@@ -23,7 +23,6 @@ npm install -g @cosmwasm/ts-codegen
 
 The quickest and easiest way to interact with CosmWasm Contracts. `@cosmwasm/ts-codegen` converts your CosmWasm smart contracts into dev-friendly TypeScript classes so you can focus on shipping code.
 
-🎥 [Checkout our video playlist](https://www.youtube.com/watch?v=D_A5V2PfNLA&list=PL-lMkVv7GZwz1KO3jANwr5W4MoziruXwK) to learn how to use `ts-codegen`!
 ## Table of contents
 
 - [@cosmwasm/ts-codegen](#cosmwasmts-codegen)
@@ -419,7 +418,8 @@ Using the new `write_api` method, you can export schemas:
 ```rs
 use cosmwasm_schema::write_api;
 
-use cw4_group::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+pub use cw4::{AdminResponse, MemberListResponse, MemberResponse, TotalWeightResponse};
+pub use cw4_group::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
 fn main() {
     write_api! {
@@ -484,5 +484,4 @@ Checkout these related projects:
 * [cosmos-kit](https://github.com/cosmology-tech/cosmos-kit) A wallet connector for the Cosmos.
 ## Credits
 
-🛠 Built by Cosmology — if you like our tools, please consider delegating to [our validator ⚛️](https://cosmology.tech/validator)
-
+Built by Cosmology — if you like our tools, please consider delegating to [our validator](https://www.mintscan.io/juno/validators/junovaloper1pr5qgj4jg47lvsnejtfvk78090shvuctgdwdm5)

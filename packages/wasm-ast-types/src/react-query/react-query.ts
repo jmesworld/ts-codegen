@@ -519,6 +519,7 @@ const generateMutationTypeParameter = (
   context: RenderContext,
   mutationHookParamsTypeName: string
 ) => {
+
   context.addUtil('ExecuteResult');
 
   return t.tsTypeParameterInstantiation([
@@ -530,6 +531,7 @@ const generateMutationTypeParameter = (
     t.tsTypeReference(t.identifier(mutationHookParamsTypeName))
   ]);
 };
+
 
 interface ReactQueryMutationHook {
   context: RenderContext;
@@ -545,7 +547,7 @@ interface ReactQueryMutationHook {
  * Example:
 ```
 export const useCw4UpdateMembersMutation = ({ client, options }: Omit<Cw4UpdateMembersMutation, 'args'>) =>
-  useMutation<ExecuteResult, Error, Pick<Cw4UpdateMembersMutation, 'args'>>(
+  useMutation<WaitTxBroadcastResult, Error, Pick<Cw4UpdateMembersMutation, 'args'>>(
     ({ args }) => client.updateMembers(args),
     options
   )

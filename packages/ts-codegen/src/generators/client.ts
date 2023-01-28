@@ -66,26 +66,25 @@ export default async (
         w.createExecuteInterface(
           context,
           Instance,
-          context.options.client.execExtendsQuery ? ReadOnlyInstance : null,
+          ReadOnlyInstance,
           ExecuteMsg
         )
       );
-
       body.push(
         w.createExecuteClass(
           context,
           Client,
           Instance,
-          context.options.client.execExtendsQuery ? QueryClient : null,
+          QueryClient,
           ExecuteMsg
         )
       );
     }
   }
 
-  if (typeHash.hasOwnProperty('Coin')) {
+  if (typeHash.hasOwnProperty('Coins')) {
     // @ts-ignore
-    delete context.utils.Coin;
+    delete context.utils.Coins;
   }
   const imports = context.getImports();
   const code = header + generate(
